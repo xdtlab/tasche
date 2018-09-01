@@ -2,6 +2,7 @@
   (:require
    [reagent.core :as reagent]
    [re-frame.core :as re-frame]
+   [tasche.effects :as effects]
    [tasche.events :as events]
    [tasche.views :as views]
    [tasche.config :as config]

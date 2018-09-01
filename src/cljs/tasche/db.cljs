@@ -1,4 +1,7 @@
 (ns tasche.db)
 
 (def default-db
-  {:private-key nil})
+  {:state :not-logged-in
+   :balance nil
+   :wallet nil
+   :transactions nil})
