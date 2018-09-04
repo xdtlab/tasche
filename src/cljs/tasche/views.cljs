@@ -36,7 +36,7 @@
               [:div.control.is-expanded [:input.input {:type :number :placeholder "Amount" :on-change #(swap! tx assoc :amount (js/parseInt (-> % .-target .-value)))}]]
               [:div.control [:button.button.is-static "XDT"]]]
 
-            [:button.button.is-success {:on-click #(re-frame/dispatch [::events/send-transaction @tx])} "Send!"]]]
+            [:button.button.is-success {:on-click #(do (re-frame/dispatch [::events/send-transaction @tx]) (on-close))} "Send!"]]]
         [:button.modal-close.is-large {:aria-label :close :on-click on-close}]])))
 
 
