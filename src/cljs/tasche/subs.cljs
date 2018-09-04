@@ -4,7 +4,9 @@
 (re-frame/reg-sub
   ::has-logged-in
   (fn [db]
-    (= (:state db) :logged-in)))
+    (and
+      (not= (:state db) :not-logged-in)
+      (not= (:state db) :logging-in))))
 
 (re-frame/reg-sub
   ::is-logging-in
