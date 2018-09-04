@@ -66,9 +66,8 @@
           [:h5.title.has-text-centered.has-text-weight-normal.has-text-dark.is-size-6 "Your recent transactions:"]
           [:table.table.is-fullwidth.is-striped.is-hoverable
             [:tbody
-              (when-let [txs txs]
-                (for [tx (if @show-more txs (take 5 txs))]
-                  [transaction tx]))]
+              (for [tx (if @show-more txs (take 5 txs))]
+                [transaction tx])]
             [:div.has-text-centered.is-size-7
               (if-not @show-more
                 [:a {:on-click #(reset! show-more true)} "Show more"]
