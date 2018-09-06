@@ -80,28 +80,41 @@
 (re-frame/reg-event-fx
   ::update-transactions-success
   (fn [{:keys [db]} [_ txs]]
-    {:db (assoc db :transactions txs)}))
+    (let [txs (into {} (map #(identity [(.hash %) {:state :confirmed :transaction %}]) (vec txs)))]
+      {:db (assoc db :transactions txs)})))
 
 ;-------------------------------------------------------
 
 (re-frame/reg-event-fx
-  ::send-transaction
+  ::create-transaction
   (fn [{:keys [db]} [_ {:keys [to name amount]}]]
-    {::effects/send-transaction {:wallet (:wallet db)
-                                 :to (js/daten.address.Address.fromString to)
-                                 :name (if (empty? name) nil name)
-                                 :data (js/daten.data.NoData.)
-                                 :amount amount
-                                 :on-success #(re-frame/dispatch [::send-transaction-success %])
-                                 :on-fail #(do )}}))
+    {::effects/create-transaction {:wallet (:wallet db)
+                                   :to (js/daten.address.Address.fromString to)
+                                   :name (if (empty? name) nil name)
+                                   :data (js/daten.data.NoData.)
+                                   :amount amount
+                                   :on-success #(re-frame/dispatch [::create-transaction-success %])
+                                   :on-fail #(do )}}))
 
 (re-frame/reg-event-fx
-  ::send-transaction-success
-  (fn [{:keys [db]} [_ response]]
-    (if (aget response "ok")
-      {::effects/toast {:type :success :title "Transaction sent!"}}
-      {::effects/swal {:type :error :title "Oops..." :text (aget response "error")}})))
+  ::create-transaction-success
+  (fn [{:keys [db]} [_ tx]]
+    {:db (update-in db [:pendings] assoc (.hash tx) {:state :pending :transaction tx})
+     ::effects/send-transaction {:wallet (:wallet db)
+                                 :transaction tx
+                                 :on-success #(re-frame/dispatch [::transaction-success tx %])
+                                 :on-fail #(re-frame/dispatch [::transaction-fail tx %])}
+     ::effects/toast {:type :success :title (str (aget tx "target"))}}))
 
+(re-frame/reg-event-fx
+  ::transaction-success
+  (fn [{:keys [db]} [_ tx response]]
+    (if (aget response "ok") {} {:db (assoc-in db [:pendings (.hash tx) :state] :error)})))
+
+(re-frame/reg-event-fx
+  ::transaction-fail
+  (fn [{:keys [db]} [_ tx response]]
+    {:db (assoc-in db [:pendings (.hash tx) :state] :error)}))
 ;-------------------------------------------------------
 
 (re-frame/reg-event-db

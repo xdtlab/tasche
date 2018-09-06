@@ -26,4 +26,6 @@
 (re-frame/reg-sub
   ::transactions
   (fn [db]
-    (:transactions db)))
+    (let [{:keys [transactions pendings]} db
+          all (sort-by #(aget (:transaction %) "target") (vals (merge pendings transactions)))]
+      all)))

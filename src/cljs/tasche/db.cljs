@@ -4,4 +4,5 @@
   {:state :not-logged-in
    :balance nil
    :wallet nil
-   :transactions nil})
+   :transactions {}
+   :pendings {}})

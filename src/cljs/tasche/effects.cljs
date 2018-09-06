@@ -41,9 +41,14 @@
     (.query wallet (clj->js filters) on-success on-fail)))
 
 (re-frame/reg-fx
-  ::send-transaction
+  ::create-transaction
   (fn [{:keys [wallet name to amount data on-success on-fail]}]
-    (.sendTransaction wallet name to amount data on-success on-fail)))
+    (.createTransaction wallet name to amount data on-success on-fail)))
+
+(re-frame/reg-fx
+  ::send-transaction
+  (fn [{:keys [wallet transaction on-success on-fail]}]
+    (.sendTransaction wallet transaction on-success on-fail)))
 
 (re-frame/reg-fx
   ::download

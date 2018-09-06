@@ -36,7 +36,7 @@
               [:div.control.is-expanded [:input.input {:type :number :placeholder "Amount" :on-change #(swap! tx assoc :amount (js/parseInt (-> % .-target .-value)))}]]
               [:div.control [:button.button.is-static "XDT"]]]
 
-            [:button.button.is-success {:on-click #(do (re-frame/dispatch [::events/send-transaction @tx]) (on-close))} "Send!"]]]
+            [:button.button.is-success {:on-click #(do (re-frame/dispatch [::events/create-transaction @tx]) (on-close))} "Send!"]]]
         [:button.modal-close.is-large {:aria-label :close :on-click on-close}]])))
 
 
@@ -54,8 +54,11 @@
 (defn transaction [tx]
   [:tr
     [:div {:style {:padding "5px"}}
-      (str "+" (js/daten.Wallet.formatAmount (aget tx "amount")))
-      [:div.is-pulled-right.fas.fa-arrow-up]]])
+      (str (js/daten.Wallet.formatAmount (aget (:transaction tx) "amount")))
+      (case (:state tx)
+        :confirmed [:div.is-pulled-right "Approved!"]
+        :pending [:div.is-pulled-right "Pending..."]
+        :error [:div.is-pulled-right "Error!"])]])
 
 (defn transaction-list []
   (let [show-more (reagent/atom false)
