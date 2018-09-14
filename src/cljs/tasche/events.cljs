@@ -80,8 +80,23 @@
 (re-frame/reg-event-fx
   ::update-transactions-success
   (fn [{:keys [db]} [_ txs]]
-    (let [txs (into {} (map #(identity [(.hash %) {:state :confirmed :transaction %}]) (vec txs)))]
+    (let [txs (into {} (map #(identity [(.hash %) {:state :confirmed :transaction % :confirmations 0}]) (vec txs)))]
+      (doseq [[_ {:keys [transaction]}] txs]
+        (re-frame/dispatch [::confirm-transaction transaction]))
       {:db (assoc db :transactions txs)})))
+
+(re-frame/reg-event-fx
+  ::confirm-transaction
+  (fn [{:keys [db]} [_ tx]]
+    {::effects/confirm-transaction {:wallet (:wallet db)
+                                    :transaction tx
+                                    :on-fail #(do )
+                                    :on-success #(re-frame/dispatch [::confirm-transaction-success tx %])}}))
+
+(re-frame/reg-event-fx
+  ::confirm-transaction-success
+  (fn [{:keys [db]} [_ tx confirmations]]
+    {:db (assoc-in db [:transactions (.hash tx) :confirmations] confirmations)}))
 
 ;-------------------------------------------------------
 
@@ -99,7 +114,7 @@
 (re-frame/reg-event-fx
   ::create-transaction-success
   (fn [{:keys [db]} [_ tx]]
-    {:db (update-in db [:pendings] assoc (.hash tx) {:state :pending :transaction tx})
+    {:db (update-in db [:pendings] assoc (.hash tx) {:state :pending :transaction tx :confirmations 0})
      ::effects/send-transaction {:wallet (:wallet db)
                                  :transaction tx
                                  :on-success #(re-frame/dispatch [::transaction-success tx %])

@@ -31,9 +31,9 @@
     (.latest wallet #(on-success %) #(on-fail))))
 
 (re-frame/reg-fx
-  ::confirm-transactions
-  (fn [{:keys [wallet transactions on-success on-fail]}]
-    (.confirm wallet ())))
+  ::confirm-transaction
+  (fn [{:keys [wallet transaction on-success on-fail]}]
+    (.confirm wallet transaction 6 #(on-success %) #(on-fail))))
 
 (re-frame/reg-fx
   ::query
