@@ -118,8 +118,7 @@
      ::effects/send-transaction {:wallet (:wallet db)
                                  :transaction tx
                                  :on-success #(re-frame/dispatch [::transaction-success tx %])
-                                 :on-fail #(re-frame/dispatch [::transaction-fail tx %])}
-     ::effects/toast {:type :success :title (str (aget tx "target"))}}))
+                                 :on-fail #(re-frame/dispatch [::transaction-fail tx %])}}))
 
 (re-frame/reg-event-fx
   ::transaction-success
