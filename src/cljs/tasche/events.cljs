@@ -95,8 +95,8 @@
 
 (re-frame/reg-event-fx
   ::confirm-transaction-success
-  (fn [{:keys [db]} [_ tx confirmations]]
-    {:db (assoc-in db [:transactions (.hash tx) :confirmations] confirmations)}))
+  (fn [{:keys [db]} [_ tx hashes]]
+    {:db (assoc-in db [:transactions (.hash tx) :confirmations] hashes)}))
 
 ;-------------------------------------------------------
 

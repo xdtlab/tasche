@@ -56,7 +56,7 @@
     [:div {:style {:padding "5px"}}
       (str (js/daten.Wallet.formatAmount (aget (:transaction tx) "amount")))
       (case (:state tx)
-        :confirmed [:div.is-pulled-right "Confirmations: " (:confirmations tx)]
+        :confirmed [:div.is-pulled-right (quot (:confirmations tx) 1000) "kHash"]
         :pending [:div.is-pulled-right "Pending..."]
         :error [:div.is-pulled-right "Error!"])]])
 

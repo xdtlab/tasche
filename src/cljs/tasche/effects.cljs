@@ -33,7 +33,7 @@
 (re-frame/reg-fx
   ::confirm-transaction
   (fn [{:keys [wallet transaction on-success on-fail]}]
-    (.confirm wallet transaction 6 #(on-success %) #(on-fail))))
+    (.confirm wallet transaction 6 #(on-success %2) #(on-fail))))
 
 (re-frame/reg-fx
   ::query
