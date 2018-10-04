@@ -17,8 +17,11 @@
 (re-frame/reg-fx
   ::connect
   (fn [{:keys [private-key on-success on-fail]}]
-    (let [wallet (js/daten.Wallet. "127.0.0.1:32323" private-key)]
-      (.getStatus wallet #(on-success wallet) #(on-fail)))))
+    (js/daten.contrib.getNodeList
+      (fn [nodes]
+        (let [wallet (js/daten.Wallet. (rand-nth nodes) private-key)]
+          (.getStatus wallet #(on-success wallet) #(on-fail))))
+      on-fail)))
 
 (re-frame/reg-fx
   ::get-balance
