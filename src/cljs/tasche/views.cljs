@@ -7,19 +7,24 @@
 (defn login-panel []
   (let [login-info (reagent/atom {:seed "" :salt ""})]
     (fn []
-      [:div
-        [:h1.title.has-text-centered.has-text-weight-light {:style {:font-family "Cairo"}} "Login"]
-        [:div.field
-          [:div.field [:input.input {:type :text :spell-check false :placeholder "Seed" :on-change #(swap! login-info assoc :seed (-> % .-target .-value))}]]
-          [:div.field [:input.input {:type :password :placeholder "Salt" :on-change #(swap! login-info assoc :salt (-> % .-target .-value))}]]
-          [:div.has-text-centered.is-size-7
-            [:a {:on-click #(js/swal "Towards simpler accounts..." "Login to your account with two random strings Seed & Salt!" "info")}
-            "(WTH?!)"]]]
-        [:div.has-text-centered
-          (let [is-logging-in (re-frame/subscribe [::subs/is-logging-in])]
-            [(if @is-logging-in
-              :button.button.is-success.is-loading
-              :button.button.is-success) {:on-click #(re-frame/dispatch [::events/login @login-info])} "Login!"])]])))
+      [:form
+        [:div
+          [:h1.title.has-text-centered.has-text-weight-light {:style {:font-family "Cairo"}} "Login"]
+          [:div.field
+            [:div.field [:input.input {:type :text :spell-check false :placeholder "Seed" :on-change #(swap! login-info assoc :seed (-> % .-target .-value))}]]
+            [:div.field [:input.input {:type :password :placeholder "Salt" :on-change #(swap! login-info assoc :salt (-> % .-target .-value))}]]
+            [:div.has-text-centered.is-size-7
+              [:a {:on-click #(js/swal "Towards simpler accounts..." "Login to your account with two random strings Seed & Salt!" "info")}
+              "(WTH?!)"]]]
+          [:div.has-text-centered
+            (let [is-logging-in (re-frame/subscribe [::subs/is-logging-in])]
+              [(if @is-logging-in
+                :button.button.is-success.is-loading
+                :button.button.is-success) {
+                  :on-click
+                    (fn [event]
+                      (.preventDefault event)
+                      (re-frame/dispatch [::events/login @login-info]))} "Login!"])]]])))
 
 (defn send-dialog
   [on-close on-send]
