@@ -83,7 +83,7 @@
     (let [txs (into {} (map #(identity [(.hash %) {:state :confirmed :transaction % :confirmations 0}]) (vec txs)))]
       (doseq [[_ {:keys [transaction]}] txs]
         (re-frame/dispatch [::confirm-transaction transaction]))
-      {:db (assoc db :transactions txs)})))
+      {:db (update-in db [:transactions] #(merge txs %))})))
 
 (re-frame/reg-event-fx
   ::confirm-transaction
