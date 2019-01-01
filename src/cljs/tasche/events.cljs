@@ -139,4 +139,4 @@
       (re-frame/dispatch [::update-transactions]))
     db))
 
-(defonce do-timer (js/setInterval #(re-frame/dispatch [::refresh]) 10000))
+(defonce do-timer (js/setInterval #(re-frame/dispatch [::refresh]) 30000))
