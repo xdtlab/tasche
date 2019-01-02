@@ -16,7 +16,7 @@
 (re-frame/reg-sub
   ::public-key
   (fn [db]
-    (js/daten.utils.hexToBase58 (.getAddress (:wallet db)) "address")))
+    (.getAddress (:wallet db))))
 
 (re-frame/reg-sub
   ::balance

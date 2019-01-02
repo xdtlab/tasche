@@ -52,7 +52,7 @@
     [:div.modal-content.animated.bounceIn
       [:div.box.column.is-8.is-offset-2
         [:h1.title.is-size-4.has-text-centered "Receive XDTs!"]
-        [:p.has-text-centered.is-size-7 (str "@" public-key)]
+        [:p.has-text-centered.is-size-7 (str public-key)]
         [:button.button.is-info {:on-click on-close} "Ok!"]]]
     [:button.modal-close.is-large {:aria-label :close :on-click on-close}]])
 
@@ -88,7 +88,7 @@
         public-key (re-frame/subscribe [::subs/public-key])]
     (fn []
       [:div
-        [:p.has-text-centered.is-size-7 (str "@" @public-key)]
+        [:p.has-text-centered.is-size-7 (str @public-key)]
         (if @is-sending
           [send-dialog #(reset! is-sending false)
             #(re-frame/dispatch [::events/new-transaction])])
