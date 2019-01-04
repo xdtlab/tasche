@@ -34,6 +34,7 @@
 (re-frame/reg-event-fx
   ::login-success
   (fn [{:keys [db]} [_ wallet]]
+    (re-frame/dispatch [::refresh])
     {:db (-> db
             (assoc :wallet wallet)
             (assoc :state :logged-in))
